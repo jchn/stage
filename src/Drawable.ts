@@ -1,7 +1,8 @@
-import { Pos, Parent, EventType, EventCallback } from "./types";
+import { Pos, Parent, EventType, EventCallback, Style } from "./types";
 import InteractionHandler, {
   InteractionHandlerInterface
 } from "./InteractionHandler";
+import applyStyle from "./applyStyle";
 
 export interface DrawableInterface {
   position: Pos;
@@ -10,7 +11,11 @@ export interface DrawableInterface {
   parent: Parent;
 }
 
-export interface PathOwner<O> {
+export interface StyleableInterface {
+  style: Style | null;
+}
+
+export interface PathOwnerInterface<O> {
   path: Path2D;
   options: O;
 }
@@ -18,14 +23,25 @@ export interface PathOwner<O> {
 export type PathCreator<O> = (x: number, y: number, options: O) => Path2D;
 
 class Drawable<O>
-  implements DrawableInterface, PathOwner<O>, InteractionHandlerInterface {
-  constructor(x: number, y: number, pathCreator: PathCreator<O>, options: O) {
+  implements
+    DrawableInterface,
+    PathOwnerInterface<O>,
+    InteractionHandlerInterface,
+    StyleableInterface {
+  constructor(
+    x: number,
+    y: number,
+    pathCreator: PathCreator<O>,
+    options: O,
+    style: Style = null
+  ) {
     this._position.x = x;
     this._position.y = y;
     this.options = options;
     this.path2d = pathCreator(x, y, options);
     this._pathCreator = pathCreator;
     this._interactionHandler = new InteractionHandler(this);
+    this._style = style;
   }
 
   private _position: Pos = { x: 0, y: 0 };
@@ -35,6 +51,7 @@ class Drawable<O>
   private _parent: Parent;
   private _pathCreator: PathCreator<O>;
   private _interactionHandler: InteractionHandlerInterface;
+  private _style: Style | null;
 
   get position() {
     return this._position;
@@ -43,6 +60,14 @@ class Drawable<O>
   set position(p: Pos) {
     this.path = this._pathCreator(p.x, p.y, this.options);
     this._position = p;
+  }
+
+  get style() {
+    return this._style;
+  }
+
+  set style(s: Style) {
+    this._style = s;
   }
 
   public get context() {
@@ -82,9 +107,18 @@ class Drawable<O>
   }
 
   public draw() {
+    if (this.style) {
+      this.ctx.save();
+      applyStyle(this.ctx, this.style);
+    }
+
     this.context.beginPath();
     this.ctx.fill(this.path);
     this.context.stroke(this.path);
+
+    if (this.style) {
+      this.ctx.restore();
+    }
   }
 
   public addEventListener(type: EventType, cb: EventCallback) {

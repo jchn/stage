@@ -1,4 +1,5 @@
 import Drawable, { PathCreator } from "./Drawable";
+import { Style } from "./types";
 
 type SquareOptions = {
   width: number;
@@ -15,16 +16,40 @@ function createSquarePath(
   return path;
 }
 
-type DrawableCreator<O> = (x: number, y: number, options: O) => Drawable<O>;
+type DrawableCreator<O> = (
+  x: number,
+  y: number,
+  options: O,
+  style?: Style
+) => Drawable<O>;
 
 function createDrawableCreator<O>(
   pathCreator: PathCreator<O>
 ): DrawableCreator<O> {
-  return function(x: number, y: number, options: O) {
-    return new Drawable<O>(x, y, pathCreator, options);
+  return function(x: number, y: number, options: O, style?: Style) {
+    return new Drawable<O>(x, y, pathCreator, options, style);
   };
 }
 
 export const createSquare = createDrawableCreator<SquareOptions>(
   createSquarePath
+);
+
+type EllipseOptions = {
+  width: number;
+  height: number;
+};
+
+function createEllipsePath(
+  x: number,
+  y: number,
+  { width, height }: EllipseOptions
+) {
+  const path = new Path2D();
+  path.ellipse(x, y, width, height, 0, 0, Math.PI * 2);
+  return path;
+}
+
+export const createEllipse = createDrawableCreator<EllipseOptions>(
+  createEllipsePath
 );

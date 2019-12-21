@@ -1,7 +1,7 @@
 import { EventType, EventCallback } from "./types";
-import { PathOwner, DrawableInterface } from "./Drawable";
+import { PathOwnerInterface, DrawableInterface } from "./Drawable";
 
-type Subject = PathOwner<unknown> & DrawableInterface;
+type Subject = PathOwnerInterface<unknown> & DrawableInterface;
 type EnhancedEventCallback = (e: MouseEvent) => void;
 
 export interface InteractionHandlerInterface {
