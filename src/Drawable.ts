@@ -45,7 +45,7 @@ class Drawable<O>
   }
 
   private _position: Pos = { x: 0, y: 0 };
-  private ctx: CanvasRenderingContext2D;
+  private _ctx: CanvasRenderingContext2D;
   private path2d: Path2D;
   private opts: O;
   private _parent: Parent;
@@ -71,11 +71,11 @@ class Drawable<O>
   }
 
   public get context() {
-    return this.ctx;
+    return this._ctx;
   }
 
   public set context(ctx: CanvasRenderingContext2D) {
-    this.ctx = ctx;
+    this._ctx = ctx;
   }
 
   get path() {
@@ -108,16 +108,16 @@ class Drawable<O>
 
   public draw() {
     if (this.style) {
-      this.ctx.save();
-      applyStyle(this.ctx, this.style);
+      this._ctx.save();
+      applyStyle(this._ctx, this.style);
     }
 
     this.context.beginPath();
-    this.ctx.fill(this.path);
+    this._ctx.fill(this.path);
     this.context.stroke(this.path);
 
     if (this.style) {
-      this.ctx.restore();
+      this._ctx.restore();
     }
   }
 

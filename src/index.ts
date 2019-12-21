@@ -1,6 +1,7 @@
 import Stage from "./Stage";
 import Group from "./Group";
 import { createSquare, createEllipse } from "./shapes";
+import { createText } from "./Text";
 
 const ctx = document.querySelector("canvas").getContext("2d");
 const stage = new Stage(800, 600, ctx);
@@ -23,9 +24,13 @@ const ellipse = createEllipse(
   }
 );
 
+const text = createText(0, 50, { width: 100, height: 100 });
+text.text = "hello world!";
+
 stage.add(group);
 group.add(square);
 group.add(ellipse);
+group.add(text);
 
 square.addEventListener("click", () => {
   console.log("clicked the square");

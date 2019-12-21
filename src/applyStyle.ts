@@ -1,4 +1,4 @@
-import { Style } from "./types";
+import { Style, TextStyle } from "./types";
 
 function applyStyle(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
@@ -27,6 +27,14 @@ function applyStyle(
     ctx.imageSmoothingQuality = style.imageSmoothingQuality;
   if (style.globalCompositeOperation !== undefined)
     ctx.globalCompositeOperation = style.globalCompositeOperation;
+}
+
+export function applyTextStyle(
+  ctx: CanvasRenderingContext2D,
+  style: TextStyle
+) {
+  applyStyle(ctx, style);
+  if (style.font) ctx.font = style.font;
 }
 
 export default applyStyle;

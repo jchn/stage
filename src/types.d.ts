@@ -16,6 +16,11 @@ export type Pos = {
   y: number;
 };
 
+export type Dimensions = {
+  width: number;
+  height: number;
+};
+
 type Interactable = {
   addEventListener: (type: EventType) => void;
   removeEventListener: (type: EventType, cb: EventCallback) => void;
@@ -66,4 +71,18 @@ export type Style = {
     | "saturation"
     | "color"
     | "luminosity";
+};
+
+export type TextStyle = Pick<
+  Style,
+  | "fillStyle"
+  | "shadowColor"
+  | "shadowBlur"
+  | "shadowOffsetX"
+  | "shadowOffsetY"
+  | "globalAlpha"
+  | "globalCompositeOperation"
+  | "filter"
+> & {
+  font: string;
 };
