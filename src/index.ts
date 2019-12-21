@@ -12,4 +12,8 @@ const square = createSquare(0, 10, { width: 20, height: 20 });
 stage.add(group);
 group.add(square);
 
+square.addEventListener("click", () => {
+  console.log("clicked the square");
+});
+
 stage.draw();

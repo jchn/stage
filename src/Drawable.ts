@@ -1,4 +1,7 @@
-import { Pos, Parent } from "./types";
+import { Pos, Parent, EventType, EventCallback } from "./types";
+import InteractionHandler, {
+  InteractionHandlerInterface
+} from "./InteractionHandler";
 
 export interface DrawableInterface {
   position: Pos;
@@ -14,13 +17,15 @@ export interface PathOwner<O> {
 
 export type PathCreator<O> = (x: number, y: number, options: O) => Path2D;
 
-class Drawable<O> implements DrawableInterface, PathOwner<O> {
+class Drawable<O>
+  implements DrawableInterface, PathOwner<O>, InteractionHandlerInterface {
   constructor(x: number, y: number, pathCreator: PathCreator<O>, options: O) {
     this._position.x = x;
     this._position.y = y;
     this.options = options;
     this.path2d = pathCreator(x, y, options);
     this._pathCreator = pathCreator;
+    this._interactionHandler = new InteractionHandler(this);
   }
 
   private _position: Pos = { x: 0, y: 0 };
@@ -29,6 +34,7 @@ class Drawable<O> implements DrawableInterface, PathOwner<O> {
   private opts: O;
   private _parent: Parent;
   private _pathCreator: PathCreator<O>;
+  private _interactionHandler: InteractionHandlerInterface;
 
   get position() {
     return this._position;
@@ -79,6 +85,18 @@ class Drawable<O> implements DrawableInterface, PathOwner<O> {
     this.context.beginPath();
     this.ctx.fill(this.path);
     this.context.stroke(this.path);
+  }
+
+  public addEventListener(type: EventType, cb: EventCallback) {
+    this._interactionHandler.addEventListener(type, cb);
+  }
+
+  public removeEventListener(type: EventType, cb: EventCallback) {
+    this._interactionHandler.removeEventListener(type, cb);
+  }
+
+  public removeAllEventListeners() {
+    this._interactionHandler.removeAllEventListeners();
   }
 }
 

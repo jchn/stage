@@ -8,7 +8,7 @@ type MouseEventTypes =
   | "mouseup"
   | "mousemove"
   | "dblclick";
-type EventType = MouseEventTypes;
+export type EventType = MouseEventTypes;
 type EventCallback = (e: MouseEvent, target: DrawableInterface) => void;
 
 export type Pos = {
