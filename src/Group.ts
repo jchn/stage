@@ -53,6 +53,11 @@ class Group implements GroupInterface, DrawableInterface {
 
   public add(item: DrawableInterface) {
     item.context = this._ctx;
+
+    if (item.parent) {
+      item.parent.remove(item);
+    }
+
     item.parent = this;
     this._items.push(item);
   }
@@ -74,6 +79,10 @@ class Group implements GroupInterface, DrawableInterface {
       item.draw();
     });
   }
+}
+
+export function createGroup(x: number, y: number) {
+  return new Group(x, y);
 }
 
 export default Group;

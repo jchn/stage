@@ -33,6 +33,11 @@ class Stage implements StageInterface, GroupInterface {
 
   add(item: DrawableInterface) {
     item.context = this.ctx;
+
+    if (item.parent) {
+      item.parent.remove(item);
+    }
+
     item.parent = this;
     this._items.push(item);
   }
@@ -52,6 +57,14 @@ class Stage implements StageInterface, GroupInterface {
     this.ctx.clearRect(0, 0, this.width, this.height);
     this._items.forEach(item => item.draw());
   }
+}
+
+export function createStage(
+  width: number,
+  height: number,
+  ctx: CanvasRenderingContext2D
+) {
+  return new Stage(width, height, ctx);
 }
 
 export default Stage;

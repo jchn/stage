@@ -1,7 +1,7 @@
 import Drawable, { PathCreator } from "./Drawable";
 import { Style } from "./types";
 
-type SquareOptions = {
+export type SquareOptions = {
   width: number;
   height: number;
 };
@@ -35,7 +35,7 @@ export const createSquare = createDrawableCreator<SquareOptions>(
   createSquarePath
 );
 
-type EllipseOptions = {
+export type EllipseOptions = {
   width: number;
   height: number;
 };
