@@ -34,7 +34,9 @@ export function applyTextStyle(
   style: TextStyle
 ) {
   applyStyle(ctx, style);
-  if (style.font) ctx.font = style.font;
+  if (style.fontSize) {
+    ctx.font = `${style.fontSize || 16}px ${style.fontFamily}`;
+  }
 }
 
 export default applyStyle;

@@ -1,5 +1,6 @@
 import { DrawableInterface } from "./Drawable";
 import { Pos } from "./types";
+import { GroupInterface } from "./Group";
 
 export interface StageInterface {
   add: (item: DrawableInterface) => void;
@@ -10,7 +11,7 @@ export interface StageInterface {
   position: Pos;
 }
 
-class Stage implements StageInterface {
+class Stage implements StageInterface, GroupInterface {
   constructor(width: number, height: number, ctx: CanvasRenderingContext2D) {
     this.width = width;
     this.height = height;

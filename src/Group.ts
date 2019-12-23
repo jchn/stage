@@ -18,7 +18,7 @@ class Group implements GroupInterface, DrawableInterface {
 
   private _position: Pos = { x: 0, y: 0 };
   private _items: DrawableInterface[] = [];
-  private ctx: CanvasRenderingContext2D;
+  private _ctx: CanvasRenderingContext2D;
   private _parent: Parent;
 
   get items() {
@@ -26,7 +26,7 @@ class Group implements GroupInterface, DrawableInterface {
   }
 
   set context(ctx: CanvasRenderingContext2D) {
-    this.ctx = ctx;
+    this._ctx = ctx;
   }
 
   get position() {
@@ -52,7 +52,7 @@ class Group implements GroupInterface, DrawableInterface {
   }
 
   public add(item: DrawableInterface) {
-    item.context = this.ctx;
+    item.context = this._ctx;
     item.parent = this;
     this._items.push(item);
   }

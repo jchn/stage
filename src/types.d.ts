@@ -84,5 +84,6 @@ export type TextStyle = Pick<
   | "globalCompositeOperation"
   | "filter"
 > & {
-  font: string;
+  fontSize: number;
+  fontFamily: string;
 };
