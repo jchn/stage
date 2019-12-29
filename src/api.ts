@@ -1,7 +1,7 @@
 import {
-  createSquare,
+  createRectangle,
   createEllipse,
-  SquareOptions,
+  RectangleOptions,
   EllipseOptions
 } from "./shapes";
 import { Pos, Style, TextStyle, Dimensions } from "./types";
@@ -11,20 +11,21 @@ import { DrawableInterface, StyleableInterface } from "./Drawable";
 import { InteractionHandlerInterface } from "./InteractionHandler";
 import { createStage, StageInterface } from "./Stage";
 
-type ShapeType = "square" | "ellipse";
-type ShapeOptions = Pos & (EllipseOptions | SquareOptions) & { style?: Style };
+export type ShapeType = "rectangle" | "ellipse";
+export type ShapeOptions = Pos &
+  (EllipseOptions | RectangleOptions) & { style?: Style };
 
 export function createShapeNode(
   type: ShapeType,
   options: ShapeOptions
 ): DrawableInterface & InteractionHandlerInterface & StyleableInterface {
   switch (type) {
-    case "square":
-      return createSquare(options.x, options.y, options, options.style);
+    case "rectangle":
+      return createRectangle(options.x, options.y, options, options.style);
     case "ellipse":
       return createEllipse(options.x, options.y, options, options.style);
     default:
-      return createSquare(options.x, options.y, options, options.style);
+      return createRectangle(options.x, options.y, options, options.style);
   }
 }
 

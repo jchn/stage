@@ -1,4 +1,4 @@
-import { DrawableInterface } from "./Drawable";
+import { DrawableInterface, DrawableKind } from "./Drawable";
 import { Pos, Parent } from "./types";
 
 export interface GroupInterface {
@@ -48,7 +48,15 @@ class Group implements GroupInterface, DrawableInterface {
   }
 
   set parent(p: Parent) {
+    this.position = {
+      x: this._position.x + p.position.x,
+      y: this._position.y + p.position.y
+    };
     this._parent = p;
+  }
+
+  get kind(): DrawableKind {
+    return "group";
   }
 
   public add(item: DrawableInterface) {

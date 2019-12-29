@@ -1,6 +1,8 @@
 import { DrawableInterface } from "./Drawable";
 import { GroupInterface } from "./Group";
 import { StageInterface } from "./Stage";
+import { RectangleOptions, EllipseOptions } from "./shapes";
+import { VNode } from "./vdom/createElement";
 
 type MouseEventTypes =
   | "click"
@@ -87,3 +89,40 @@ export type TextStyle = Pick<
   fontSize: number;
   fontFamily: string;
 };
+
+/* vdom */
+
+export type JSXNodeType = "group" | "shape";
+
+type JSXNodeProps = Pos & { children: VNode[] | null };
+
+type JSXGroupProps = Pos & {
+  children: any[];
+};
+
+type JSXShapeProps = Pos & {
+  style?: Style;
+  type: "rectangle" | "ellipse";
+} & (RectangleOptions | EllipseOptions);
+
+type JSXShapeNode = VNode & {
+  type: "ellipsis" | "rectangle";
+  props: JSXShapeProps;
+};
+
+type JSXGroupNode = VNode & {
+  type: "group";
+  props: JSXGroupProps;
+};
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      shape: JSXShapeProps;
+      group: JSXGroupProps;
+    }
+    interface ElementChildrenAttribute {
+      children: JSX.IntrinsicElements[];
+    }
+  }
+}

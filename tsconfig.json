@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "jsx": "preserve",
+    "jsx": "react",
     "esModuleInterop": true,
     "sourceMap": true,
     "allowJs": true,
@@ -11,6 +11,7 @@
     ],
     "rootDir": "src",
     "moduleResolution": "node",
-    "target": "ES5"
+    "target": "ES5",
+    "jsxFactory": "createElement"
   }
 }

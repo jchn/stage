@@ -1,4 +1,4 @@
-import { DrawableInterface } from "./Drawable";
+import { DrawableInterface, DrawableKind } from "./Drawable";
 import { Pos, Dimensions, Parent, TextStyle } from "./types";
 import { applyTextStyle } from "./applyStyle";
 
@@ -93,6 +93,10 @@ class Text implements DrawableInterface {
 
   set style(s: TextStyle) {
     this._style = s;
+  }
+
+  get kind(): DrawableKind {
+    return "text";
   }
 
   draw() {

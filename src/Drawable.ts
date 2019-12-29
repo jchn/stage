@@ -4,11 +4,19 @@ import InteractionHandler, {
 } from "./InteractionHandler";
 import applyStyle from "./applyStyle";
 
+export type DrawableKind =
+  | "rectangle"
+  | "ellipse"
+  | "group"
+  | "text"
+  | "unknown";
+
 export interface DrawableInterface {
   position: Pos;
   draw: () => void;
   context: CanvasRenderingContext2D;
   parent: Parent;
+  kind: DrawableKind;
 }
 
 export interface StyleableInterface {
@@ -52,6 +60,7 @@ class Drawable<O>
   private _pathCreator: PathCreator<O>;
   private _interactionHandler: InteractionHandlerInterface;
   private _style: Style | null;
+  private _kind: DrawableKind = "unknown";
 
   get position() {
     return this._position;
@@ -104,6 +113,14 @@ class Drawable<O>
       y: this._position.y + p.position.y
     };
     this._parent = p;
+  }
+
+  get kind() {
+    return this._kind;
+  }
+
+  set kind(k: DrawableKind) {
+    this._kind = k;
   }
 
   public draw() {
