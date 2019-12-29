@@ -92,6 +92,8 @@ export type TextStyle = Pick<
 
 /* vdom */
 
+type EventHandlerProps = { onClick?: EventCallback };
+
 export type JSXNodeType = "group" | "shape";
 
 type JSXNodeProps = Pos & { children: VNode[] | null };
@@ -100,10 +102,11 @@ type JSXGroupProps = Pos & {
   children: any[];
 };
 
-type JSXShapeProps = Pos & {
-  style?: Style;
-  type: "rectangle" | "ellipse";
-} & (RectangleOptions | EllipseOptions);
+type JSXShapeProps = Pos &
+  EventHandlerProps & {
+    style?: Style;
+    type: "rectangle" | "ellipse";
+  } & (RectangleOptions | EllipseOptions);
 
 type JSXShapeNode = VNode & {
   type: "ellipsis" | "rectangle";

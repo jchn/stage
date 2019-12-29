@@ -11,6 +11,9 @@ const vnode = (
       width={10}
       height={10}
       style={{ fillStyle: "red", filter: "blur(3px)", lineWidth: 3 }}
+      onClick={() => {
+        console.log("clicked the ellipse");
+      }}
     />
     <shape
       type="rectangle"
@@ -19,6 +22,9 @@ const vnode = (
       width={10}
       height={10}
       style={{ lineWidth: 5, fillStyle: "orange" }}
+      onClick={() => {
+        console.log("clicked the rectangle");
+      }}
     />
   </group>
 );

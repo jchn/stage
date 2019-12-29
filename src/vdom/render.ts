@@ -12,10 +12,12 @@ export function diff(
 
 export function render(parent: GroupInterface, node: VNode): void {
   let children = [];
-  let dom = null;
   if (node.type === "group") {
     children = node._children = node.props.children;
-    dom = node._dom = api.createGroupNode({ x: node.props.x, y: node.props.y });
+    const dom = (node._dom = api.createGroupNode({
+      x: node.props.x,
+      y: node.props.y
+    }));
 
     parent.add(dom);
 
@@ -24,7 +26,13 @@ export function render(parent: GroupInterface, node: VNode): void {
     });
   } else if (node.type === "shape") {
     const n = node as JSXShapeNode;
-    dom = n._dom = api.createShapeNode(n.props.type, n.props);
+    const dom = (n._dom = api.createShapeNode(n.props.type, n.props));
+
     parent.add(dom);
+
+    // event handling
+    if (n.props.onClick) {
+      dom.addEventListener("click", n.props.onClick);
+    }
   }
 }
