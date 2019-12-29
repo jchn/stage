@@ -1,23 +1,23 @@
 import { DrawableInterface, DrawableKind } from "./Drawable";
-import { Pos, Parent } from "./types";
+import { Pos, Parent, StageItem } from "./types";
 
-export interface GroupInterface {
+export interface GroupInterface extends DrawableInterface {
   add: (item: DrawableInterface) => void;
-  remove: (item: DrawableInterface) => void;
+  remove: (item: StageItem) => void;
   empty: () => void;
-  items: DrawableInterface[];
+  items: StageItem[];
   position: Pos;
 }
 
 type GroupOptions = {};
 
-class Group implements GroupInterface, DrawableInterface {
+class Group implements GroupInterface {
   constructor(x: number, y: number) {
     this.position = { x, y };
   }
 
   private _position: Pos = { x: 0, y: 0 };
-  private _items: DrawableInterface[] = [];
+  private _items: StageItem[] = [];
   private _ctx: CanvasRenderingContext2D;
   private _parent: Parent;
 
@@ -70,7 +70,7 @@ class Group implements GroupInterface, DrawableInterface {
     this._items.push(item);
   }
 
-  public remove(item: DrawableInterface) {
+  public remove(item: StageItem) {
     const index = this._items.indexOf(item);
 
     if (index > -1) {

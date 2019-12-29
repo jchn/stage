@@ -123,6 +123,10 @@ class Drawable<O>
     this._kind = k;
   }
 
+  get handlers() {
+    return this._interactionHandler.handlers;
+  }
+
   public draw() {
     if (this.style) {
       this._ctx.save();

@@ -1,17 +1,8 @@
-import { DrawableInterface } from "./Drawable";
-import { Pos } from "./types";
+import { StageItem } from "./types";
 import { GroupInterface } from "./Group";
 
-export interface StageInterface {
-  add: (item: DrawableInterface) => void;
-  remove: (item: DrawableInterface) => void;
-  items: DrawableInterface[];
-  draw: () => void;
-  empty: () => void;
-  position: Pos;
-}
-
-class Stage implements StageInterface, GroupInterface {
+class Stage implements GroupInterface {
+  kind: import("./Drawable").DrawableKind;
   constructor(width: number, height: number, ctx: CanvasRenderingContext2D) {
     this.width = width;
     this.height = height;
@@ -21,7 +12,15 @@ class Stage implements StageInterface, GroupInterface {
   private width: number;
   private height: number;
   private ctx: CanvasRenderingContext2D;
-  private _items: DrawableInterface[] = [];
+  private _items: StageItem[] = [];
+
+  get parent() {
+    return this;
+  }
+
+  get context() {
+    return this.ctx;
+  }
 
   get items() {
     return this._items;
@@ -31,7 +30,7 @@ class Stage implements StageInterface, GroupInterface {
     return { x: 0, y: 0 };
   }
 
-  add(item: DrawableInterface) {
+  add(item: StageItem) {
     item.context = this.ctx;
 
     if (item.parent) {
@@ -42,7 +41,7 @@ class Stage implements StageInterface, GroupInterface {
     this._items.push(item);
   }
 
-  remove(item: DrawableInterface) {
+  remove(item: StageItem) {
     const index = this._items.indexOf(item);
     if (index > -1) {
       this._items.splice(index, 1);

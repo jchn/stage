@@ -1,6 +1,5 @@
 import { GroupInterface } from "../Group";
 import { DrawableInterface } from "../Drawable";
-import { Component } from "./render";
 import { JSXNodeType, JSXNodeProps } from "../types";
 
 export type VNodeProps = JSXNodeProps;
@@ -15,8 +14,10 @@ export type VNodeCreator = (props: VNodeProps) => VNode;
 export function createElement(
   type: JSXNodeType | VNodeCreator,
   props: JSXNodeProps,
-  ...children: VNode[]
+  children: VNode[] | VNode | null
 ): VNode {
+  if (!Array.isArray(children)) children = [children];
+
   return createVNode({
     type,
     props: { ...props, children }
@@ -30,7 +31,7 @@ export type VNode = Element & {
   _children: VNode[] | null;
   _dom: StageRef | null;
   _depth: number;
-  _component: typeof Component | null;
+  _component: null;
 };
 
 function createVNode(element: Element): VNode {

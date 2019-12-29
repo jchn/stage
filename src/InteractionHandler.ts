@@ -4,10 +4,19 @@ import { PathOwnerInterface, DrawableInterface } from "./Drawable";
 type Subject = PathOwnerInterface<unknown> & DrawableInterface;
 type EnhancedEventCallback = (e: MouseEvent) => void;
 
+type InteractionHandlers = {
+  click: Map<EventCallback, EnhancedEventCallback>;
+  mousedown: Map<EventCallback, EnhancedEventCallback>;
+  mouseup: Map<EventCallback, EnhancedEventCallback>;
+  dblclick: Map<EventCallback, EnhancedEventCallback>;
+  mousemove: Map<EventCallback, EnhancedEventCallback>;
+};
+
 export interface InteractionHandlerInterface {
   addEventListener: (type: EventType, cb: EventCallback) => void;
   removeEventListener: (type: EventType, cb: EventCallback) => void;
   removeAllEventListeners: () => void;
+  handlers: InteractionHandlers;
 }
 
 class InteractionHandler implements InteractionHandlerInterface {
@@ -20,6 +29,10 @@ class InteractionHandler implements InteractionHandlerInterface {
       mousemove: new Map()
     };
     this._subject = subject;
+  }
+
+  get handlers() {
+    return this._handlers;
   }
 
   private _handlers: {

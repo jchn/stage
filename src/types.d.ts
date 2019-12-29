@@ -3,6 +3,7 @@ import { GroupInterface } from "./Group";
 import { StageInterface } from "./Stage";
 import { RectangleOptions, EllipseOptions } from "./shapes";
 import { VNode } from "./vdom/createElement";
+import { InteractionHandlerInterface } from "./InteractionHandler";
 
 type MouseEventTypes =
   | "click"
@@ -29,6 +30,10 @@ type Interactable = {
 };
 
 type Parent = GroupInterface | StageInterface;
+
+type StageItem =
+  | InteractionHandlerInterface & DrawableInterface
+  | GroupInterface;
 
 export type Style = {
   fillStyle?: string | CanvasGradient | CanvasPattern;

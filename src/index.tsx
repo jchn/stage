@@ -1,33 +1,11 @@
 import { createElement } from "./vdom/createElement";
 import { createStage } from "./Stage";
 import { render } from "./vdom/render";
+import { ShapeType } from "./api";
 
-const vnode = (
-  <group x={0} y={0}>
-    <shape
-      type="ellipse"
-      x={20}
-      y={20}
-      width={10}
-      height={10}
-      style={{ fillStyle: "red", filter: "blur(3px)", lineWidth: 3 }}
-      onClick={() => {
-        console.log("clicked the ellipse");
-      }}
-    />
-    <shape
-      type="rectangle"
-      x={100}
-      y={100}
-      width={10}
-      height={10}
-      style={{ lineWidth: 5, fillStyle: "orange" }}
-      onClick={() => {
-        console.log("clicked the rectangle");
-      }}
-    />
-  </group>
-);
+function clickHandler() {
+  console.log("called clickHandler");
+}
 
 const stage = createStage(
   800,
@@ -35,35 +13,43 @@ const stage = createStage(
   document.querySelector("canvas").getContext("2d")
 );
 
-render(stage, vnode);
+const shapes: ShapeType[] = [
+  "ellipse",
+  "rectangle",
+  "ellipse",
+  "rectangle",
+  "ellipse",
+  "rectangle"
+];
 
-stage.draw();
+const createVNode = function(t) {
+  return (
+    <group x={0} y={0}>
+      {shapes.map((shape, i) => (
+        <shape
+          type={shape}
+          x={t * 0.01 + i * 5}
+          y={t * 0.01 + i * 5}
+          width={5}
+          height={5}
+        />
+      ))}
+    </group>
+  );
+};
 
-const newVNode = (
-  <group x={10} y={0}>
-    <shape
-      type="ellipse"
-      x={20}
-      y={20}
-      width={10}
-      height={10}
-      style={{ fillStyle: "red", filter: "blur(3px)", lineWidth: 3 }}
-      onClick={() => {
-        console.log("clicked the ellipse");
-      }}
-    />
-    <shape
-      type="rectangle"
-      x={100}
-      y={100}
-      width={10}
-      height={10}
-      style={{ lineWidth: 5, fillStyle: "orange" }}
-      onClick={() => {
-        console.log("clicked the rectangle");
-      }}
-    />
-  </group>
-);
+function loop(t) {
+  render(stage, createVNode(t));
+  stage.draw();
+  requestAnimationFrame(loop);
+}
 
-render(stage, newVNode);
+// loop(0);
+// loop(10);
+// loop(20);
+// loop(30);
+// loop(40);
+// loop(50);
+// loop(60);
+
+console.log("stage", stage);
