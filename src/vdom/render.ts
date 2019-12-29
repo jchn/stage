@@ -1,7 +1,13 @@
 import { VNode } from "./createElement";
 import { GroupInterface } from "../Group";
 import * as api from "../api";
-import { JSXShapeNode, JSXGroupNode, StageItem, EventCallback } from "../types";
+import {
+  JSXShapeNode,
+  JSXGroupNode,
+  StageItem,
+  EventCallback,
+  JSXTextNode
+} from "../types";
 import { DrawableInterface } from "../Drawable";
 import { InteractionHandlerInterface } from "../InteractionHandler";
 
@@ -11,9 +17,12 @@ export function render(parent: GroupInterface, node: VNode): void {
 
 function diff(parent: GroupInterface, vnode: VNode, domNode: StageItem) {
   let dom = domNode;
-  if (vnode && dom) {
+  if (vnode && dom && vnode.type === dom.kind) {
     // apply diff
     updateNode(vnode, dom);
+  } else if (vnode && dom && vnode.type !== dom.kind) {
+    removeNode(parent, dom);
+    createNode(parent, vnode);
   } else if (vnode && !dom) {
     // create new domnode
     createNode(parent, vnode);
@@ -25,20 +34,9 @@ function diff(parent: GroupInterface, vnode: VNode, domNode: StageItem) {
 
 function updateNode(vnode: VNode, domNode: StageItem) {
   const dom = domNode;
-  if (vnode.type === dom.kind) {
-    // update the domNode
-    if (vnode.props.x !== dom.position.x || vnode.props.y !== dom.position.y) {
-      dom.position = { x: vnode.props.x, y: vnode.props.y };
-    }
-  }
-
-  if (
-    vnode.type === "shape" &&
-    (dom.kind === "rectangle" || dom.kind === "ellipse")
-  ) {
-    if (vnode.props.x !== dom.position.x || vnode.props.y !== dom.position.y) {
-      dom.position = { x: vnode.props.x, y: vnode.props.y };
-    }
+  // update the domNode
+  if (vnode.props.x !== dom.position.x || vnode.props.y !== dom.position.y) {
+    dom.position = { x: vnode.props.x, y: vnode.props.y };
   }
 
   if (vnode.type === "group") {
@@ -73,9 +71,17 @@ function updateNode(vnode: VNode, domNode: StageItem) {
       sn.removeEventListener("click", cb);
     }
   }
+
+  if (vnode.type === "text") {
+    let tn = dom as DrawableInterface;
+
+    if (vnode.props.children[0] !== tn.text) {
+      tn.text = vnode.props.children[0];
+    }
+  }
 }
 
-function createNode(parent: GroupInterface, vnode: VNode) {
+function createNode(parent: GroupInterface, vnode: VNode): StageItem | null {
   let n = null;
   if (vnode.type === "group") {
     n = vnode as JSXGroupNode;
@@ -86,9 +92,11 @@ function createNode(parent: GroupInterface, vnode: VNode) {
 
     parent.add(gn);
 
-    return vnode.props.children.forEach(cn => {
-      diff(gn, cn, null);
+    vnode.props.children.forEach(cn => {
+      createNode(gn, cn);
     });
+
+    return gn;
   } else if (vnode.type === "shape") {
     n = vnode as JSXShapeNode;
     let sn: DrawableInterface &
@@ -97,7 +105,18 @@ function createNode(parent: GroupInterface, vnode: VNode) {
     if (n.props.onClick) {
       sn.addEventListener("click", n.props.onClick);
     }
+    return sn;
+  } else if (vnode.type === "text") {
+    n = vnode as JSXTextNode;
+    let tn: DrawableInterface = api.createTextNode(
+      n.props.children[0],
+      n.props
+    );
+    parent.add(tn);
+    return tn;
   }
+
+  return null;
 }
 
 function removeNode(parent: GroupInterface, domNode: StageItem) {

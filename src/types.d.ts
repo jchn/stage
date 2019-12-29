@@ -32,6 +32,7 @@ type Interactable = {
 type Parent = GroupInterface | StageInterface;
 
 type StageItem =
+  | DrawableInterface
   | InteractionHandlerInterface & DrawableInterface
   | GroupInterface;
 
@@ -99,12 +100,16 @@ export type TextStyle = Pick<
 
 type EventHandlerProps = { onClick?: EventCallback };
 
-export type JSXNodeType = "group" | "shape";
+export type JSXNodeType = "group" | "shape" | "text";
 
 type JSXNodeProps = Pos & { children: VNode[] | null };
 
 type JSXGroupProps = Pos & {
   children: any[];
+};
+
+type JSXTextProps = Pos & {
+  children: string;
 };
 
 type JSXShapeProps = Pos &
@@ -123,11 +128,17 @@ type JSXGroupNode = VNode & {
   props: JSXGroupProps;
 };
 
+type JSXTextNode = VNode & {
+  type: "text";
+  props: JSXTextProps;
+};
+
 declare global {
   namespace JSX {
     interface IntrinsicElements {
       shape: JSXShapeProps;
       group: JSXGroupProps;
+      text: JSXTextProps;
     }
     interface ElementChildrenAttribute {
       children: JSX.IntrinsicElements[];

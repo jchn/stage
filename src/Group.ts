@@ -9,8 +9,6 @@ export interface GroupInterface extends DrawableInterface {
   position: Pos;
 }
 
-type GroupOptions = {};
-
 class Group implements GroupInterface {
   constructor(x: number, y: number) {
     this.position = { x, y };
@@ -59,7 +57,7 @@ class Group implements GroupInterface {
     return "group";
   }
 
-  public add(item: DrawableInterface) {
+  public add(item: StageItem) {
     item.context = this._ctx;
 
     if (item.parent) {

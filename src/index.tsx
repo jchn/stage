@@ -23,17 +23,24 @@ const shapes: ShapeType[] = [
 ];
 
 const createVNode = function(t) {
-  return (
-    <group x={0} y={0}>
+  return t % 2 === 0 ? (
+    <group x={t * 0.1} y={t * 0.1}>
       {shapes.map((shape, i) => (
         <shape
           type={shape}
+          onClick={clickHandler}
           x={t * 0.01 + i * 5}
           y={t * 0.01 + i * 5}
           width={5}
           height={5}
         />
       ))}
+    </group>
+  ) : (
+    <group x={t * 0.1} y={t * 0.1}>
+      <text x={t * 0.01 + 1 * 5} y={t * 0.01 + 1 * 5} width={5} height={5}>
+        foo
+      </text>
     </group>
   );
 };

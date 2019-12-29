@@ -4,12 +4,7 @@ import InteractionHandler, {
 } from "./InteractionHandler";
 import applyStyle from "./applyStyle";
 
-export type DrawableKind =
-  | "rectangle"
-  | "ellipse"
-  | "group"
-  | "text"
-  | "unknown";
+export type DrawableKind = "group" | "text" | "shape" | "unknown";
 
 export interface DrawableInterface {
   position: Pos;

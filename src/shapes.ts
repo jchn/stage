@@ -36,7 +36,7 @@ function createDrawableCreator<O>(
 
 export const createRectangle = createDrawableCreator<RectangleOptions>(
   createRectanglePath,
-  "rectangle"
+  "shape"
 );
 
 export type EllipseOptions = {
@@ -56,5 +56,5 @@ function createEllipsePath(
 
 export const createEllipse = createDrawableCreator<EllipseOptions>(
   createEllipsePath,
-  "ellipse"
+  "shape"
 );

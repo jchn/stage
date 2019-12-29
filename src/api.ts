@@ -9,7 +9,7 @@ import { createText } from "./Text";
 import { createGroup, GroupInterface } from "./Group";
 import { DrawableInterface, StyleableInterface } from "./Drawable";
 import { InteractionHandlerInterface } from "./InteractionHandler";
-import { createStage, StageInterface } from "./Stage";
+import { createStage } from "./Stage";
 
 export type ShapeType = "rectangle" | "ellipse";
 export type ShapeOptions = Pos &
@@ -59,6 +59,6 @@ export function createStageNode({
   ctx,
   width,
   height
-}: StageOptions): StageInterface & GroupInterface {
+}: StageOptions): GroupInterface {
   return createStage(width, height, ctx);
 }
