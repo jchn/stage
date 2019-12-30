@@ -13,14 +13,7 @@ const stage = createStage(
   document.querySelector("canvas").getContext("2d")
 );
 
-const shapes: ShapeType[] = [
-  "ellipse",
-  "rectangle",
-  "ellipse",
-  "rectangle",
-  "ellipse",
-  "rectangle"
-];
+const shapes: ShapeType[] = new Array(256).fill(null).map(_ => "rectangle");
 
 const createVNode = function(t) {
   return (
@@ -29,11 +22,13 @@ const createVNode = function(t) {
         <shape
           type={shape}
           onClick={clickHandler}
-          x={t * 0.01 + i * 5}
-          y={t * 0.01 + i * 5}
-          width={t * 0.01 + i * 5}
-          height={t * 0.01 + i * 5}
-          style={{ lineWidth: Math.round(t * 0.01), fillStyle: "blue" }}
+          x={50 + i * 3}
+          y={50}
+          width={50}
+          height={50}
+          rotate={t * 0.1 + i * 5}
+          anchor={[0.5, 0.5]}
+          style={{ lineWidth: 1, fillStyle: "blue" }}
         />
       ))}
     </group>
@@ -46,7 +41,7 @@ function loop(t) {
   requestAnimationFrame(loop);
 }
 
-// loop(0);
+loop(0);
 // loop(10);
 // loop(20);
 // loop(30);

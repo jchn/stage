@@ -4,15 +4,54 @@ import { Style } from "./types";
 export type RectangleOptions = {
   width: number;
   height: number;
+  scale: number;
+  rotate: number;
+  anchor: Point;
 };
+
+type Point = number[];
+
+const deg2rad = a => (a * Math.PI) / 180;
+
+function rotatePoint(angle: number, point: Point) {
+  const x = point[0];
+  const y = point[1];
+  point[0] = Math.cos(angle) * x + Math.sin(angle) * y;
+  point[1] = -Math.sin(angle) * x + Math.cos(angle) * y;
+}
+
+function translatePoint(t: Point, point: Point) {
+  const x = point[0];
+  const x1 = t[0];
+  const y = point[1];
+  const y1 = t[1];
+
+  point[0] = x + x1;
+  point[1] = y + y1;
+}
 
 function createRectanglePath(
   x: number,
   y: number,
-  { width, height }: RectangleOptions
+  { width, height, scale, rotate, anchor = [0, 0] }: RectangleOptions
 ): Path2D {
+  const points: Point[] = [[0, 0], [width, 0], [width, height], [0, height]];
+
   const path = new Path2D();
-  path.rect(x, y, width, height);
+
+  points.forEach((p, i) => {
+    translatePoint([anchor[0] * -width, anchor[1] * -height], p);
+    rotatePoint(deg2rad(rotate), p);
+    translatePoint([x, y], p);
+
+    if (i === 0) {
+      path.moveTo(p[0], p[1]);
+    } else {
+      path.lineTo(p[0], p[1]);
+    }
+  });
+
+  path.closePath();
   return path;
 }
 
@@ -36,25 +75,5 @@ function createDrawableCreator<O>(
 
 export const createRectangle = createDrawableCreator<RectangleOptions>(
   createRectanglePath,
-  "shape"
-);
-
-export type EllipseOptions = {
-  width: number;
-  height: number;
-};
-
-function createEllipsePath(
-  x: number,
-  y: number,
-  { width, height }: EllipseOptions
-) {
-  const path = new Path2D();
-  path.ellipse(x, y, width, height, 0, 0, Math.PI * 2);
-  return path;
-}
-
-export const createEllipse = createDrawableCreator<EllipseOptions>(
-  createEllipsePath,
   "shape"
 );

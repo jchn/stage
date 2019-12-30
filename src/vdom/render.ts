@@ -140,3 +140,15 @@ function createNode(parent: GroupInterface, vnode: VNode): StageItem | null {
 function removeNode(parent: GroupInterface, domNode: StageItem) {
   parent.remove(domNode);
 }
+
+function diffEventHandlers(vnode: VNode, domNode: InteractionHandlerInterface) {
+  const props = vnode.props;
+
+  const keys = Object.keys(props);
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    if (key.startsWith("on")) {
+    }
+  }
+}
