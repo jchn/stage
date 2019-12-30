@@ -1,4 +1,11 @@
-import { Pos, Parent, EventType, EventCallback, Style } from "./types";
+import {
+  Pos,
+  Parent,
+  EventType,
+  EventCallback,
+  Style,
+  Dimensions
+} from "./types";
 import InteractionHandler, {
   InteractionHandlerInterface
 } from "./InteractionHandler";
@@ -40,7 +47,7 @@ class Drawable<O>
   ) {
     this._position.x = x;
     this._position.y = y;
-    this.options = options;
+    this._options = options;
     this.path2d = pathCreator(x, y, options);
     this._pathCreator = pathCreator;
     this._interactionHandler = new InteractionHandler(this);
@@ -50,12 +57,13 @@ class Drawable<O>
   private _position: Pos = { x: 0, y: 0 };
   private _ctx: CanvasRenderingContext2D;
   private path2d: Path2D;
-  private opts: O;
+  private _options: O;
   private _parent: Parent;
   private _pathCreator: PathCreator<O>;
   private _interactionHandler: InteractionHandlerInterface;
   private _style: Style | null;
   private _kind: DrawableKind = "unknown";
+  private _dimensions: Dimensions = { width: 0, height: 0 };
 
   get position() {
     return this._position;
@@ -91,11 +99,16 @@ class Drawable<O>
   }
 
   get options() {
-    return this.opts;
+    return this._options;
   }
 
   set options(o: O) {
-    this.opts = o;
+    this.path = this._pathCreator(
+      this.position.x,
+      this.position.y,
+      this.options
+    );
+    this._options = o;
   }
 
   get parent() {

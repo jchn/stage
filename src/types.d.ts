@@ -1,4 +1,8 @@
-import { DrawableInterface } from "./Drawable";
+import {
+  DrawableInterface,
+  PathOwnerInterface,
+  StyleableInterface
+} from "./Drawable";
 import { GroupInterface } from "./Group";
 import { StageInterface } from "./Stage";
 import { RectangleOptions, EllipseOptions } from "./shapes";
@@ -33,7 +37,10 @@ type Parent = GroupInterface | StageInterface;
 
 type StageItem =
   | DrawableInterface
-  | InteractionHandlerInterface & DrawableInterface
+  | InteractionHandlerInterface &
+      DrawableInterface &
+      PathOwnerInterface<unknown> &
+      StyleableInterface
   | GroupInterface;
 
 export type Style = {

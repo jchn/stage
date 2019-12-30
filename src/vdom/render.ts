@@ -8,7 +8,11 @@ import {
   EventCallback,
   JSXTextNode
 } from "../types";
-import { DrawableInterface } from "../Drawable";
+import {
+  DrawableInterface,
+  PathOwnerInterface,
+  StyleableInterface
+} from "../Drawable";
 import { InteractionHandlerInterface } from "../InteractionHandler";
 
 export function render(parent: GroupInterface, node: VNode): void {
@@ -57,7 +61,21 @@ function updateNode(vnode: VNode, domNode: StageItem) {
   }
 
   if (vnode.type === "shape") {
-    let sn = dom as DrawableInterface & InteractionHandlerInterface;
+    let sn = dom as DrawableInterface &
+      InteractionHandlerInterface &
+      PathOwnerInterface<unknown> &
+      StyleableInterface;
+
+    let optionsMutated = false;
+    Object.keys(sn.options).forEach(key => {
+      if (sn.options[key] !== vnode.props[key]) {
+        optionsMutated = true;
+      }
+    });
+
+    if (optionsMutated) sn.options = vnode.props;
+
+    if (vnode.props.style) sn.style = vnode.props.style;
 
     const cb: EventCallback = sn.handlers.click.keys().next().value;
     if (vnode.props.onClick) {
