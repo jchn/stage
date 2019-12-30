@@ -1,7 +1,8 @@
 import {
   DrawableInterface,
   PathOwnerInterface,
-  StyleableInterface
+  StyleableInterface,
+  PointsOwnerInterface
 } from "./Drawable";
 import { GroupInterface } from "./Group";
 import { StageInterface } from "./Stage";
@@ -36,12 +37,13 @@ type Interactable = {
 type Parent = GroupInterface | StageInterface;
 
 type StageItem =
-  | DrawableInterface
+  | DrawableInterface & PointsOwnerInterface
   | InteractionHandlerInterface &
       DrawableInterface &
       PathOwnerInterface<unknown> &
-      StyleableInterface
-  | GroupInterface;
+      StyleableInterface &
+      PointsOwnerInterface
+  | GroupInterface & PointsOwnerInterface;
 
 export type Style = {
   fillStyle?: string | CanvasGradient | CanvasPattern;
@@ -152,3 +154,5 @@ declare global {
     }
   }
 }
+
+type Point = number[];

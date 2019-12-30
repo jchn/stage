@@ -1,5 +1,5 @@
-import Drawable, { PathCreator, DrawableKind } from "./Drawable";
-import { Style } from "./types";
+import Drawable, { DrawableKind, PointsCreator } from "./Drawable";
+import { Style, Point } from "./types";
 
 export type RectangleOptions = {
   width: number;
@@ -9,15 +9,13 @@ export type RectangleOptions = {
   anchor: Point;
 };
 
-type Point = number[];
-
 const deg2rad = a => (a * Math.PI) / 180;
 
 function rotatePoint(angle: number, point: Point) {
   const x = point[0];
   const y = point[1];
-  point[0] = Math.cos(angle) * x + Math.sin(angle) * y;
-  point[1] = -Math.sin(angle) * x + Math.cos(angle) * y;
+  point[0] = Math.cos(-angle) * x + Math.sin(-angle) * y;
+  point[1] = -Math.sin(-angle) * x + Math.cos(-angle) * y;
 }
 
 function translatePoint(t: Point, point: Point) {
@@ -33,41 +31,51 @@ function translatePoint(t: Point, point: Point) {
 function createRectanglePath(
   x: number,
   y: number,
-  { width, height, scale, rotate, anchor = [0, 0] }: RectangleOptions
-): Path2D {
+  width: number,
+  height: number,
+  { rotate, anchor = [0, 0] }: RectangleOptions
+): Point[] {
   const points: Point[] = [[0, 0], [width, 0], [width, height], [0, height]];
-
-  const path = new Path2D();
 
   points.forEach((p, i) => {
     translatePoint([anchor[0] * -width, anchor[1] * -height], p);
     rotatePoint(deg2rad(rotate), p);
     translatePoint([x, y], p);
-
-    if (i === 0) {
-      path.moveTo(p[0], p[1]);
-    } else {
-      path.lineTo(p[0], p[1]);
-    }
   });
 
-  path.closePath();
-  return path;
+  return points;
 }
 
 type DrawableCreator<O> = (
   x: number,
   y: number,
+  width: number,
+  height: number,
   options: O,
   style?: Style
 ) => Drawable<O>;
 
 function createDrawableCreator<O>(
-  pathCreator: PathCreator<O>,
+  pointsCreator: PointsCreator<O>,
   kind: DrawableKind
 ): DrawableCreator<O> {
-  return function(x: number, y: number, options: O, style?: Style) {
-    const d = new Drawable<O>(x, y, pathCreator, options, style);
+  return function(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    options: O,
+    style?: Style
+  ) {
+    const d = new Drawable<O>(
+      x,
+      y,
+      width,
+      height,
+      pointsCreator,
+      options,
+      style
+    );
     d.kind = kind;
     return d;
   };

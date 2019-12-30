@@ -4,14 +4,15 @@ import {
   EventType,
   EventCallback,
   Style,
-  Dimensions
+  Dimensions,
+  Point
 } from "./types";
 import InteractionHandler, {
   InteractionHandlerInterface
 } from "./InteractionHandler";
 import applyStyle from "./applyStyle";
 
-export type DrawableKind = "group" | "text" | "shape" | "unknown";
+export type DrawableKind = "group" | "text" | "shape" | "unknown" | "tile";
 
 export interface DrawableInterface {
   position: Pos;
@@ -30,47 +31,67 @@ export interface PathOwnerInterface<O> {
   options: O;
 }
 
-export type PathCreator<O> = (x: number, y: number, options: O) => Path2D;
+export interface PointsOwnerInterface {
+  points: Point[];
+}
+
+export type PointsCreator<O> = (
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  options: O
+) => Point[];
 
 class Drawable<O>
   implements
     DrawableInterface,
     PathOwnerInterface<O>,
     InteractionHandlerInterface,
-    StyleableInterface {
+    StyleableInterface,
+    PointsOwnerInterface {
   constructor(
     x: number,
     y: number,
-    pathCreator: PathCreator<O>,
+    width: number,
+    height: number,
+    pointsCreator: PointsCreator<O>,
     options: O,
     style: Style = null
   ) {
     this._position.x = x;
     this._position.y = y;
     this._options = options;
-    this.path2d = pathCreator(x, y, options);
-    this._pathCreator = pathCreator;
+    this._points = pointsCreator(x, y, width, height, options);
+    this._pointsCreator = pointsCreator;
     this._interactionHandler = new InteractionHandler(this);
     this._style = style;
+    this._dimensions = { width, height };
   }
 
   private _position: Pos = { x: 0, y: 0 };
+  private _dimensions: Dimensions;
   private _ctx: CanvasRenderingContext2D;
-  private path2d: Path2D;
   private _options: O;
   private _parent: Parent;
-  private _pathCreator: PathCreator<O>;
+  private _pointsCreator: PointsCreator<O>;
   private _interactionHandler: InteractionHandlerInterface;
   private _style: Style | null;
   private _kind: DrawableKind = "unknown";
-  private _dimensions: Dimensions = { width: 0, height: 0 };
+  private _points: Point[];
 
   get position() {
     return this._position;
   }
 
   set position(p: Pos) {
-    this.path = this._pathCreator(p.x, p.y, this.options);
+    this._points = this._pointsCreator(
+      p.x,
+      p.y,
+      this._dimensions.width,
+      this._dimensions.height,
+      this.options
+    );
     this._position = p;
   }
 
@@ -91,11 +112,18 @@ class Drawable<O>
   }
 
   get path() {
-    return this.path2d;
-  }
+    const path = new Path2D();
+    const points = this._points;
 
-  set path(path: Path2D) {
-    this.path2d = path;
+    points.forEach((p, i) => {
+      if (i === 0) {
+        path.moveTo(p[0], p[1]);
+      } else {
+        path.lineTo(p[0], p[1]);
+      }
+    });
+
+    return path;
   }
 
   get options() {
@@ -103,9 +131,11 @@ class Drawable<O>
   }
 
   set options(o: O) {
-    this.path = this._pathCreator(
+    this._points = this._pointsCreator(
       this.position.x,
       this.position.y,
+      this._dimensions.width,
+      this._dimensions.height,
       this.options
     );
     this._options = o;
@@ -133,6 +163,10 @@ class Drawable<O>
 
   get handlers() {
     return this._interactionHandler.handlers;
+  }
+
+  get points() {
+    return this._points;
   }
 
   public draw() {

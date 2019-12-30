@@ -15,9 +15,23 @@ export function createShapeNode(
 ): DrawableInterface & InteractionHandlerInterface & StyleableInterface {
   switch (type) {
     case "rectangle":
-      return createRectangle(options.x, options.y, options, options.style);
+      return createRectangle(
+        options.x,
+        options.y,
+        options.width,
+        options.height,
+        options,
+        options.style
+      );
     default:
-      return createRectangle(options.x, options.y, options, options.style);
+      return createRectangle(
+        options.x,
+        options.y,
+        options.width,
+        options.height,
+        options,
+        options.style
+      );
   }
 }
 

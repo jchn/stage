@@ -1,5 +1,10 @@
-import { DrawableInterface, DrawableKind } from "./Drawable";
-import { Pos, Parent, StageItem } from "./types";
+import {
+  DrawableInterface,
+  DrawableKind,
+  PointsOwnerInterface
+} from "./Drawable";
+import { Pos, Parent, StageItem, Point } from "./types";
+import { boxFromPoints } from "./utils";
 
 export interface GroupInterface extends DrawableInterface {
   add: (item: DrawableInterface) => void;
@@ -9,7 +14,7 @@ export interface GroupInterface extends DrawableInterface {
   position: Pos;
 }
 
-class Group implements GroupInterface {
+class Group implements GroupInterface, PointsOwnerInterface {
   constructor(x: number, y: number) {
     this.position = { x, y };
   }
@@ -57,6 +62,12 @@ class Group implements GroupInterface {
     return "group";
   }
 
+  get points() {
+    return this._items
+      .map(item => item.points)
+      .reduce((a, b) => a.concat(b), []);
+  }
+
   public add(item: StageItem) {
     item.context = this._ctx;
 
@@ -76,6 +87,10 @@ class Group implements GroupInterface {
     }
   }
 
+  private boundBox(): Point[] {
+    return boxFromPoints(this.points);
+  }
+
   public empty() {
     this._items.splice(0, this._items.length);
   }
@@ -84,6 +99,18 @@ class Group implements GroupInterface {
     this.items.forEach(item => {
       item.draw();
     });
+
+    const box = this.boundBox();
+
+    box.forEach((p, i) => {
+      if (i === 0) {
+        this._ctx.moveTo(p[0], p[1]);
+      } else {
+        this._ctx.lineTo(p[0], p[1]);
+      }
+    });
+    this._ctx.closePath();
+    this._ctx.stroke();
   }
 }
 

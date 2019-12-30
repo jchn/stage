@@ -13,16 +13,16 @@ const stage = createStage(
   document.querySelector("canvas").getContext("2d")
 );
 
-const shapes: ShapeType[] = new Array(256).fill(null).map(_ => "rectangle");
+const shapes: ShapeType[] = new Array(5).fill(null).map(_ => "rectangle");
 
 const createVNode = function(t) {
   return (
-    <group x={t * 0.1} y={t * 0.1}>
+    <group x={0} y={0}>
       {shapes.map((shape, i) => (
         <shape
           type={shape}
           onClick={clickHandler}
-          x={50 + i * 3}
+          x={50 + i * 80}
           y={50}
           width={50}
           height={50}
